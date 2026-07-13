@@ -1,0 +1,43 @@
+# Node
+node_modules/
+**/node_modules/
+npm-debug.log*
+yarn-error.log
+
+# Build output
+dist/
+build/
+coverage/
+client/dist/
+server/dist/
+
+# Vite / caches
+.vite/
+.cache/
+/.vite
+**/.vite/
+
+# Environment files
+.env
+.env.*
+**/.env
+**/.env.*
+
+# Logs
+logs
+*.log
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# IDEs
+.vscode/
+.idea/
+
+# Docker
+docker-compose.override.yml
+
+# Misc
+*.tgz
+*.zip

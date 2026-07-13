@@ -9,7 +9,7 @@ function LandingPage() {
     <div className="landing-page">
       <nav className="landing-nav">
         <span className="landing-logo">
-          <span className="landing-logo-mark">&lt;/&gt;</span> NxtBuild
+          <span className="landing-logo-mark">&lt;/&gt;</span> AiBuild
         </span>
         <div className="landing-nav-right">
           <button className="landing-nav-login" onClick={() => navigate('/login')}>
@@ -29,7 +29,7 @@ function LandingPage() {
             <span className="landing-hero-accent">Working Web Apps</span>
           </h1>
           <p className="landing-hero-subtitle">
-            Describe what you want to build in plain English. NxtBuild generates
+            Describe what you want to build in plain English. AiBuild generates
             clean, production-ready code instantly.
           </p>
 
@@ -86,9 +86,9 @@ function LandingPage() {
       <footer className="landing-footer">
         <div className="landing-footer-content">
           <span className="landing-footer-logo">
-            <span className="landing-logo-mark">&lt;/&gt;</span> NxtBuild
+            <span className="landing-logo-mark">&lt;/&gt;</span> AiBuild
           </span>
-          <p className="landing-footer-text">Built with AI. Powered by Gemini.</p>
+          <p className="landing-footer-text"> Powered by Gemini.</p>
         </div>
       </footer>
     </div>

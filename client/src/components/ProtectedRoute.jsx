@@ -1,9 +1,8 @@
-import { useContext } from 'react';
+import { useSelector } from 'react-redux';
 import { Navigate } from 'react-router-dom';
-import { AuthContext } from '../context/AuthContext.jsx';
 
 function ProtectedRoute({ children }) {
-  const { user, loading } = useContext(AuthContext);
+  const { user, loading } = useSelector((state) => state.auth);
 
   if (loading) {
     return (

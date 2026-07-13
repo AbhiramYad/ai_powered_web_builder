@@ -1,15 +1,25 @@
-import { useContext } from 'react';
+import { useEffect } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
+import { bindActionCreators } from 'redux';
 import { Routes, Route, Navigate } from 'react-router-dom';
-import { AuthContext } from './context/AuthContext.jsx';
+import { actionCreators } from './state/index.js';
 import LandingPage from './pages/LandingPage.jsx';
 import LoginPage from './pages/LoginPage.jsx';
 import DashboardPage from './pages/DashboardPage.jsx';
 import BuilderPage from './pages/BuilderPage.jsx';
 import Navbar from './components/Navbar.jsx';
 import ProtectedRoute from './components/ProtectedRoute.jsx';
+import ToastContainer from './components/ToastContainer.jsx';
 
 function App() {
-  const { user, loading } = useContext(AuthContext);
+  const dispatch = useDispatch();
+  const { user, loading } = useSelector((state) => state.auth);
+  const actions = bindActionCreators(actionCreators, dispatch);
+
+  useEffect(() => {
+    actions.checkAuth();
+  }, [dispatch]);
+
 
   if (loading) {
     return (
@@ -22,6 +32,7 @@ function App() {
 
   return (
     <div className="app-shell">
+      <ToastContainer />
       <Routes>
         <Route path="/" element={user ? <Navigate to="/dashboard" /> : <LandingPage />} />
         <Route path="/login" element={user ? <Navigate to="/dashboard" /> : <LoginPage />} />

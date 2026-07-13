@@ -1,13 +1,15 @@
-import { useState, useContext } from 'react';
+import { useState } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
+import { bindActionCreators } from 'redux';
 import { useNavigate, Navigate } from 'react-router-dom';
-import { AuthContext } from '../context/AuthContext.jsx';
-import { ToastContext } from '../context/ToastContext.jsx';
+import { actionCreators } from '../state/index.js';
 import { register, emailLogin } from '../services/authService.js';
 import '../styles/login.css';
 
 function LoginPage() {
-  const { user, login } = useContext(AuthContext);
-  const { showToast } = useContext(ToastContext);
+  const dispatch = useDispatch();
+  const user = useSelector((state) => state.auth.user);
+  const actions = bindActionCreators(actionCreators, dispatch);
   const navigate = useNavigate();
 
   const [isSignUp, setIsSignUp] = useState(false);
@@ -23,15 +25,15 @@ function LoginPage() {
     if (loading) return;
 
     if (!email || !password) {
-      showToast('Please fill in all fields.', 'error');
+      actions.showToast('Please fill in all fields.', 'error');
       return;
     }
     if (isSignUp && !name) {
-      showToast('Please enter your name.', 'error');
+      actions.showToast('Please enter your name.', 'error');
       return;
     }
     if (password.length < 6) {
-      showToast('Password must be at least 6 characters.', 'error');
+      actions.showToast('Password must be at least 6 characters.', 'error');
       return;
     }
 
@@ -41,8 +43,8 @@ function LoginPage() {
         ? await register(name, email, password)
         : await emailLogin(email, password);
 
-      login(result.token, result.user);
-      showToast(
+      actions.login(result.token, result.user);
+      actions.showToast(
         isSignUp ? `Welcome, ${result.user.name}!` : `Welcome back, ${result.user.name}!`,
         'success'
       );
@@ -51,11 +53,12 @@ function LoginPage() {
       const message = err.response && err.response.data && err.response.data.message
         ? err.response.data.message
         : 'Something went wrong.';
-      showToast(message, 'error');
+      actions.showToast(message, 'error');
     } finally {
       setLoading(false);
     }
   };
+
 
   const handleToggle = () => {
     setIsSignUp(!isSignUp);
@@ -67,7 +70,7 @@ function LoginPage() {
   return (
     <div className="login-page">
       <div className="login-brand" onClick={() => navigate('/')}>
-        <span className="login-brand-mark">&lt;/&gt;</span> NxtBuild
+        <span className="login-brand-mark">&lt;/&gt;</span> AiBuild
       </div>
 
       <div className="login-card">

@@ -1,13 +1,16 @@
-import { useState, useEffect, useContext } from 'react';
+import { useState, useEffect } from 'react';
+import { useDispatch } from 'react-redux';
+import { bindActionCreators } from 'redux';
 import { useNavigate } from 'react-router-dom';
-import { ToastContext } from '../context/ToastContext.jsx';
+import { actionCreators } from '../state/index.js';
 import ProjectCard from '../components/ProjectCard.jsx';
 import { getProjects, createProject, deleteProject } from '../services/projectService.js';
 import '../styles/dashboard.css';
 
 function DashboardPage() {
   const navigate = useNavigate();
-  const { showToast } = useContext(ToastContext);
+  const dispatch = useDispatch();
+  const actions = bindActionCreators(actionCreators, dispatch);
 
   const [projects, setProjects] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -18,7 +21,7 @@ function DashboardPage() {
         const data = await getProjects();
         setProjects(data);
       } catch (err) {
-        showToast('Failed to load projects.', 'error');
+        actions.showToast('Failed to load projects.', 'error');
       } finally {
         setLoading(false);
       }
@@ -31,7 +34,7 @@ function DashboardPage() {
       const project = await createProject();
       navigate(`/builder/${project._id}`);
     } catch (err) {
-      showToast('Failed to create project.', 'error');
+      actions.showToast('Failed to create project.', 'error');
     }
   };
 
@@ -43,11 +46,12 @@ function DashboardPage() {
     try {
       await deleteProject(id);
       setProjects(projects.filter((p) => p._id !== id));
-      showToast('Project deleted.', 'success');
+      actions.showToast('Project deleted.', 'success');
     } catch (err) {
-      showToast('Failed to delete project.', 'error');
+      actions.showToast('Failed to delete project.', 'error');
     }
   };
+
 
   if (loading) {
     return (

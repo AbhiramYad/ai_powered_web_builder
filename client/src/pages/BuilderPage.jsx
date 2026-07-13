@@ -1,6 +1,8 @@
-import { useState, useEffect, useContext } from 'react';
+import { useState, useEffect } from 'react';
+import { useDispatch } from 'react-redux';
+import { bindActionCreators } from 'redux';
 import { useParams, useNavigate } from 'react-router-dom';
-import { ToastContext } from '../context/ToastContext.jsx';
+import { actionCreators } from '../state/index.js';
 import ChatMessage from '../components/ChatMessage.jsx';
 import ChatInput from '../components/ChatInput.jsx';
 import CodeEditor from '../components/CodeEditor.jsx';
@@ -21,7 +23,8 @@ const EXAMPLE_PROMPTS = [
 function BuilderPage() {
   const { projectId } = useParams();
   const navigate = useNavigate();
-  const { showToast } = useContext(ToastContext);
+  const dispatch = useDispatch();
+  const actions = bindActionCreators(actionCreators, dispatch);
 
   const [project, setProject] = useState(null);
   const [messages, setMessages] = useState([]);
@@ -41,7 +44,7 @@ function BuilderPage() {
         setCode(data.generatedCode || '');
         setEditTitle(data.title || 'Untitled Project');
       } catch (err) {
-        showToast('Project not found.', 'error');
+        actions.showToast('Project not found.', 'error');
         navigate('/dashboard');
       } finally {
         setPageLoading(false);
@@ -76,7 +79,7 @@ function BuilderPage() {
       const message = err.response && err.response.data && err.response.data.message
         ? err.response.data.message
         : 'Generation failed. Please try again.';
-      showToast(message, 'error');
+      actions.showToast(message, 'error');
       setMessages((prev) => prev.slice(0, -1));
     } finally {
       setLoading(false);
@@ -90,7 +93,7 @@ function BuilderPage() {
         await updateProject(projectId, { title: editTitle.trim() });
         setProject((prev) => ({ ...prev, title: editTitle.trim() }));
       } catch (error) {
-        showToast('Failed to rename project.', 'error');
+        actions.showToast('Failed to rename project.', 'error');
       }
     }
   };
@@ -104,8 +107,9 @@ function BuilderPage() {
     link.download = `${project && project.title ? project.title : 'my-app'}.html`;
     link.click();
     URL.revokeObjectURL(url);
-    showToast('Code downloaded!', 'success');
+    actions.showToast('Code downloaded!', 'success');
   };
+
 
   if (pageLoading) {
     return (

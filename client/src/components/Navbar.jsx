@@ -1,22 +1,24 @@
-import { useContext } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
+import { bindActionCreators } from 'redux';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
-import { AuthContext } from '../context/AuthContext.jsx';
-import { ToastContext } from '../context/ToastContext.jsx';
+import { actionCreators } from '../state/index.js';
 import { logout as logoutAPI } from '../services/authService.js';
 import '../styles/navbar.css';
 
 function Navbar() {
-  const { user, logout } = useContext(AuthContext);
-  const { showToast } = useContext(ToastContext);
+  const dispatch = useDispatch();
+  const user = useSelector((state) => state.auth.user);
+  const actions = bindActionCreators(actionCreators, dispatch);
   const navigate = useNavigate();
   const location = useLocation();
 
   const handleLogout = async () => {
     try { await logoutAPI(); } catch (error) { /* optional */ }
-    logout();
-    showToast('Logged out successfully', 'success');
+    actions.logout();
+    actions.showToast('Logged out successfully', 'success');
     navigate('/login');
   };
+
 
   const isActive = (path) => location.pathname === path || location.pathname.startsWith(path + '/');
 
@@ -24,7 +26,7 @@ function Navbar() {
     <nav className="navbar">
       <div className="navbar-left">
         <Link to="/dashboard" className="navbar-brand">
-          <span className="navbar-brand-mark">&lt;/&gt;</span> NxtBuild
+          <span className="navbar-brand-mark">&lt;/&gt;</span> AiBuild
         </Link>
         <div className="navbar-links">
           <Link to="/dashboard" className={`navbar-link ${isActive('/dashboard') ? 'active' : ''}`}>
